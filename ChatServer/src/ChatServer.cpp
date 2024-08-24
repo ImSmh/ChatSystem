@@ -7,6 +7,7 @@
 #include "ConfigMgr.h"
 #include "RedisMgr.h"
 #include "ChatServiceImpl.h"
+#include "const.h"
 
 using namespace std;
 bool bstop = false;
@@ -14,6 +15,7 @@ std::condition_variable cond_quit;
 std::mutex mutex_quit;
 int main()
 {
+    LOG_INFO(g_logger) << "ChatServer is running";
 	auto& cfg = ConfigMgr::Inst();
     auto server_name = cfg["SelfServer"]["Name"];
     try {

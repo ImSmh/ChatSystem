@@ -1,5 +1,8 @@
 #pragma once
 #include <functional>
+#include "Log.h"
+
+static Logger::ptr g_logger = LOG_NAME("ChatServer");
 
 
 enum ErrorCodes {

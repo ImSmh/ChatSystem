@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 project(MyProject VERSION 1.0)
 
 # 设置 C++ 标准
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 启用调试信息
@@ -16,6 +16,7 @@ find_package(Threads REQUIRED)
 # find_package(jsoncpp REQUIRED)
 find_package(hiredis REQUIRED)
 # find_package(MySQL REQUIRED) # 如果使用 MySQL Connector/C++
+find_package(yaml-cpp REQUIRED)  # 添加 yaml-cpp 库的查找
 
 # 添加 gRPC 和 Protobuf
 find_package(Protobuf REQUIRED)
@@ -30,6 +31,7 @@ include_directories(
     ${hiredis_INCLUDE_DIRS}
     ${Protobuf_INCLUDE_DIRS}
     ${gRPC_INCLUDE_DIRS}
+    ${YAML_CPP_INCLUDE_DIRS}  # 添加 yaml-cpp 的包含目录
 )
 
 # 源文件
@@ -38,12 +40,14 @@ set(SOURCES
     src/AsioIOServicePool.cpp
     src/ChatGrpcClient.cpp
     src/ConfigMgr.cpp
+    src/Log.cpp
     src/message.grpc.pb.cc
     src/message.pb.cc
     src/MysqlDao.cpp
     src/MysqlMgr.cpp
     src/RedisMgr.cpp
     src/StatusServiceImpl.cpp
+    src/util.cpp
 )
 
 # 可执行文件
@@ -60,6 +64,7 @@ target_link_libraries(StatusServer
         gRPC::grpc++
         gRPC::grpc
         ${CMAKE_THREAD_LIBS_INIT}
+        yaml-cpp
         mysqlcppconn  # 如果需要 MySQL，请确保已安装并取消注释
 )
 

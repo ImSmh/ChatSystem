@@ -4,7 +4,6 @@
 #include <json/reader.h>
 #include "const.h"
 #include "ConfigMgr.h"
-// #include "hiredis.h"
 #include <hiredis/hiredis.h>
 #include "RedisMgr.h"
 #include "MysqlMgr.h"
@@ -15,6 +14,8 @@
 #include <thread>
 #include <boost/asio.hpp>
 #include "StatusServiceImpl.h"
+#include "Log.h"
+
 void RunServer() {
 	auto& cfg = ConfigMgr::Inst();
 
@@ -53,6 +54,7 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
+    LOG_INFO(g_logger) << "StatusServer is running";
 	try {
 		RunServer();
 		RedisMgr::GetInstance()->Close();

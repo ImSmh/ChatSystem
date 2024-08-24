@@ -11,12 +11,6 @@
 #include "Singleton.h"
 #include <assert.h>
 #include <queue>
-// #include <jdbc/mysql_driver.h>
-// #include <jdbc/mysql_connection.h>
-// #include <jdbc/cppconn/prepared_statement.h>
-// #include <jdbc/cppconn/resultset.h>
-// #include <jdbc/cppconn/statement.h>
-// #include <jdbc/cppconn/exception.h>
 #include <mysql_driver.h>
 #include <mysql_connection.h>
 #include <cppconn/prepared_statement.h>
@@ -31,11 +25,14 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include "Log.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+
+static Logger::ptr g_logger = LOG_NAME("StatusServer");
 
 enum ErrorCodes {
 	Success = 0,

@@ -8,14 +8,16 @@
 #include "CServer.h"
 #include "ConfigMgr.h"
 #include "RedisMgr.h"
+#include "Singleton.h"
+#include "Log.h"
 
 int main()
 {
-    //TestRedisMgr();
 
 	auto& gCfgMgr = ConfigMgr::Inst();
 	std::string gate_port_str = gCfgMgr["GateServer"]["Port"];
 	unsigned short port = atoi(gate_port_str.c_str());
+    LOG_INFO(g_logger) << "GateServer is running";
 
 	try {
 		//unsigned short port = static_cast<unsigned short>(8080);

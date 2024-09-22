@@ -1,0 +1,5 @@
+.vscode
+GateServer/build
+StatusServer/build
+ChatServer/build
+ChatServer2/build

@@ -1,0 +1,19 @@
+{
+    "email": {
+        "user": "smh0240@163.com",
+        "password": "AZCIKZBMARWJMLKJ"
+    },
+
+    "mysql": {
+        "host": "43.138.171.103",
+        "port": "3307",
+        "password": "smh2580"
+    },
+
+    "redis": {
+        "host": "43.138.171.103",
+        "port": "6380",
+        "password": "smh2580"
+    }
+    
+}

@@ -561,7 +561,7 @@ LoggerManager::LoggerManager() {
     std::time_t now = std::time(nullptr);
     std::tm tm = *std::localtime(&now);
     std::stringstream ss;
-    ss << "../log/" << "log_" << std::put_time(&tm, "%Y%m%d%H%M%S") << ".log";
+    ss << "../log/" << "log_" << std::put_time(&tm, "%Y%m%d_%H%M%S") << ".log";
     std::string filename = ss.str();
     m_root->addAppender(LogAppender::ptr(new FileLogAppender(filename)));
 

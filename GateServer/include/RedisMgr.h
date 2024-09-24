@@ -17,15 +17,17 @@ public:
             }
             auto reply = (redisReply*)redisCommand(context, "AUTH %s", pwd);
             if (reply->type == REDIS_REPLY_ERROR) {
-                std::cout << "ÈÏÖ¤Ê§°Ü" << std::endl;
-                //Ö´ÐÐ³É¹¦ ÊÍ·ÅredisCommandÖ´ÐÐºó·µ»ØµÄredisReplyËùÕ¼ÓÃµÄÄÚ´æ
+                std::cout << "è®¤è¯å¤±è´¥" << std::endl;
+                LOG_ERROR(g_logger) << "redis pool è®¤è¯å¤±è´¥";
+                //Ö´ï¿½Ð³É¹ï¿½ ï¿½Í·ï¿½redisCommandÖ´ï¿½Ðºó·µ»Øµï¿½redisReplyï¿½ï¿½Õ¼ï¿½Ãµï¿½ï¿½Ú´ï¿½
                 freeReplyObject(reply);
                 redisFree(context);
                 continue;
             }
-            //Ö´ÐÐ³É¹¦ ÊÍ·ÅredisCommandÖ´ÐÐºó·µ»ØµÄredisReplyËùÕ¼ÓÃµÄÄÚ´æ
+            //Ö´ï¿½Ð³É¹ï¿½ ï¿½Í·ï¿½redisCommandÖ´ï¿½Ðºó·µ»Øµï¿½redisReplyï¿½ï¿½Õ¼ï¿½Ãµï¿½ï¿½Ú´ï¿½
             freeReplyObject(reply);
-            std::cout << "ÈÏÖ¤³É¹¦" << std::endl;
+            std::cout << "è®¤è¯æˆåŠŸ" << std::endl;
+            LOG_INFO(g_logger) << "redis pool è®¤è¯æˆåŠŸ";
             connections_.push(context);
         }
     }
@@ -43,7 +45,7 @@ public:
             }
             return !connections_.empty();
             });
-        //Èç¹ûÍ£Ö¹ÔòÖ±½Ó·µ»Ø¿ÕÖ¸Õë
+        //ï¿½ï¿½ï¿½Í£Ö¹ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½Ø¿ï¿½Ö¸ï¿½ï¿½
         if (b_stop_) {
             return  nullptr;
         }

@@ -1,5 +1,13 @@
 .vscode
 GateServer/build
+GateServer/log
+GateServer/src/config.ini
 StatusServer/build
+StatusServer/log
+StatusServer/src/config.ini
 ChatServer/build
+ChatServer/log
+ChatServer/src/config.ini
 ChatServer2/build
+ChatServer2/log
+ChatServer2/src/config.ini

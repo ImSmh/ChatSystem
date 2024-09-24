@@ -2,22 +2,22 @@
 
 ConfigMgr::ConfigMgr()
 {
-	// »ñÈ¡µ±Ç°¹¤×÷Ä¿Â¼
+	// è·å–å½“å‰å·¥ä½œç›®å½•  
 	boost::filesystem::path current_path = boost::filesystem::current_path();
-	// ¹¹½¨ config.ini ÎÄ¼şµÄÍêÕûÂ·¾¶
+	// æ„å»ºconfig.iniæ–‡ä»¶çš„å®Œæ•´è·¯å¾„  
 	boost::filesystem::path config_path = current_path / "config.ini";
 	std::cout << "Config path: " << config_path << std::endl;
 
-	// Ê¹ÓÃ Boost.PropertyTree À´¶ÁÈ¡ INI ÎÄ¼ş
+	// ä½¿ç”¨Boost.PropertyTreeæ¥è¯»å–INIæ–‡ä»¶  
 	boost::property_tree::ptree pt;
 	boost::property_tree::read_ini(config_path.string(), pt);
 
-	// ±éÀú INI ÎÄ¼şÖĞËùÓĞµÄ section
+	// éå†INIæ–‡ä»¶ä¸­çš„æ‰€æœ‰section 
 	for (const auto& section_pair : pt) {
 		const std::string& section_name = section_pair.first;
 		const boost::property_tree::ptree& section_tree = section_pair.second;
 
-		// ¶ÔÓÚÃ¿¸ö section£¬±éÀúÆäËùÓĞµÄ kv ¶Ô
+		// å¯¹äºæ¯ä¸ªsectionï¼Œéå†å…¶æ‰€æœ‰çš„key-valueå¯¹  
 		std::map<std::string, std::string> section_config;
 		for (const auto& key_value_pair : section_tree) {
 			const std::string& key = key_value_pair.first;
@@ -33,8 +33,10 @@ ConfigMgr::ConfigMgr()
 		const std::string& section_name = section_entry.first;
 		SectionInfo section_config = section_entry.second;
 		std::cout << "[" << section_name << "]" << std::endl;
+		LOG_FMT_INFO(g_logger, "[%s]", section_name.c_str());
 		for (const auto& key_value_pair : section_config._section_datas) {
 			std::cout << key_value_pair.first << " = " << key_value_pair.second << std::endl;
+			LOG_FMT_INFO(g_logger, "%s = %s", key_value_pair.first.c_str(), key_value_pair.second.c_str());
 		}
 	}
 }

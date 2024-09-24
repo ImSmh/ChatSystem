@@ -23,6 +23,7 @@ void HttpConnection::Start()
 			if (ec) {
 				// std::cout << "http read err is " << ec.what() << std::endl;
 				std::cout << "http read err is " << ec.message() << std::endl;
+				LOG_FMT_ERROR(g_logger, "http read err is %s", ec.message());
 				return;
 			}
 			boost::ignore_unused(bytes_transferred);
@@ -31,6 +32,7 @@ void HttpConnection::Start()
 		}
 		catch (std::exception& exp) {
 			std::cout << "exception is " << exp.what() << std::endl;
+			LOG_FMT_ERROR(g_logger, "exception is %s", exp.what());
 		}
 	});
 }
@@ -57,7 +59,7 @@ void HttpConnection::WriteResponse()
 
 void HttpConnection::HandleReq()
 {
-	// ÉèÖÃ°æ±¾
+	// ï¿½ï¿½ï¿½Ã°æ±¾
 	_response.version(_request.version());
 	_response.keep_alive(false);
 	if(_request.method() == http::verb::get) {
@@ -116,18 +118,18 @@ std::string UrlEncode(const std::string& str)
 	size_t length = str.length();
 	for (size_t i = 0; i < length; i++)
 	{
-		//ÅÐ¶ÏÊÇ·ñ½öÓÐÊý×ÖºÍ×ÖÄ¸¹¹³É
+		//ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öºï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
 		if (isalnum((unsigned char)str[i]) ||
 			(str[i] == '-') ||
 			(str[i] == '_') ||
 			(str[i] == '.') ||
 			(str[i] == '~'))
 			strTemp += str[i];
-		else if (str[i] == ' ') //Îª¿Õ×Ö·û
+		else if (str[i] == ' ') //Îªï¿½ï¿½ï¿½Ö·ï¿½
 			strTemp += "+";
 		else
 		{
-			//ÆäËû×Ö·ûÐèÒªÌáÇ°¼Ó%²¢ÇÒ¸ßËÄÎ»ºÍµÍËÄÎ»·Ö±ð×ªÎª16½øÖÆ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Òªï¿½ï¿½Ç°ï¿½ï¿½%ï¿½ï¿½ï¿½Ò¸ï¿½ï¿½ï¿½Î»ï¿½Íµï¿½ï¿½ï¿½Î»ï¿½Ö±ï¿½×ªÎª16ï¿½ï¿½ï¿½ï¿½
 			strTemp += '%';
 			strTemp += ToHex((unsigned char)str[i] >> 4);
 			strTemp += ToHex((unsigned char)str[i] & 0x0F);
@@ -142,9 +144,9 @@ std::string UrlDecode(const std::string& str)
 	size_t length = str.length();
 	for (size_t i = 0; i < length; i++)
 	{
-		//»¹Ô­+Îª¿Õ
+		//ï¿½ï¿½Ô­+Îªï¿½ï¿½
 		if (str[i] == '+') strTemp += ' ';
-		//Óöµ½%½«ºóÃæµÄÁ½¸ö×Ö·û´Ó16½øÖÆ×ªÎªcharÔÙÆ´½Ó
+		//ï¿½ï¿½ï¿½ï¿½%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½16ï¿½ï¿½ï¿½ï¿½×ªÎªcharï¿½ï¿½Æ´ï¿½ï¿½
 		else if (str[i] == '%')
 		{
 			assert(i + 2 < length);
@@ -158,9 +160,9 @@ std::string UrlDecode(const std::string& str)
 }
 
 void HttpConnection::PreParseGetParam() {
-	// ÌáÈ¡ URI  
+	// ï¿½ï¿½È¡ URI  
 	auto uri = _request.target();
-	// ²éÕÒ²éÑ¯×Ö·û´®µÄ¿ªÊ¼Î»ÖÃ£¨¼´ '?' µÄÎ»ÖÃ£©  
+	// ï¿½ï¿½ï¿½Ò²ï¿½Ñ¯ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ê¼Î»ï¿½Ã£ï¿½ï¿½ï¿½ '?' ï¿½ï¿½Î»ï¿½Ã£ï¿½  
 	auto query_pos = uri.find('?');
 	if (query_pos == std::string::npos) {
 		// _get_url = uri;
@@ -178,13 +180,13 @@ void HttpConnection::PreParseGetParam() {
 		auto pair = query_string.substr(0, pos);
 		size_t eq_pos = pair.find('=');
 		if (eq_pos != std::string::npos) {
-			key = UrlDecode(pair.substr(0, eq_pos)); // ¼ÙÉèÓÐ url_decode º¯ÊýÀ´´¦ÀíURL½âÂë  
+			key = UrlDecode(pair.substr(0, eq_pos)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ url_decode ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½URLï¿½ï¿½ï¿½ï¿½  
 			value = UrlDecode(pair.substr(eq_pos + 1));
 			_get_params[key] = value;
 		}
 		query_string.erase(0, pos + 1);
 	}
-	// ´¦Àí×îºóÒ»¸ö²ÎÊý¶Ô£¨Èç¹ûÃ»ÓÐ & ·Ö¸ô·û£©  
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ & ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½  
 	if (!query_string.empty()) {
 		size_t eq_pos = query_string.find('=');
 		if (eq_pos != std::string::npos) {

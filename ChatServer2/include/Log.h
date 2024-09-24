@@ -13,6 +13,7 @@
 #include <map>
 #include <mutex>
 #include <yaml-cpp/yaml.h>
+#include <filesystem>
 #include <boost/smart_ptr/detail/spinlock.hpp>
 #include "Singleton.h"
 #include "util.h"
@@ -23,7 +24,8 @@
 #define LOG_LEVEL(logger, level) \
     if(logger->getLevel() <= level) \
         LogEventWrap(LogEvent::ptr(new LogEvent(logger, level, \
-                        __FILE__, __LINE__, 0, GetThreadId(),\
+                        std::filesystem::path(__FILE__).filename().string().c_str(), \
+                        __LINE__, 0, GetThreadId(),\
                         time(0)))).getSS()
 
 /**
@@ -57,7 +59,8 @@
 #define LOG_FMT_LEVEL(logger, level, fmt, ...) \
     if(logger->getLevel() <= level) \
         LogEventWrap(LogEvent::ptr(new LogEvent(logger, level, \
-                        __FILE__, __LINE__, 0, GetThreadId(),\
+                        std::filesystem::path(__FILE__).filename().string().c_str(), \
+                        __LINE__, 0, GetThreadId(),\
                         time(0)))).getEvent()->format(fmt, __VA_ARGS__)
 
 /**

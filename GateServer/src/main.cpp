@@ -13,11 +13,11 @@
 
 int main()
 {
+    LOG_INFO(g_logger) << "GateServer is running";
 
 	auto& gCfgMgr = ConfigMgr::Inst();
 	std::string gate_port_str = gCfgMgr["GateServer"]["Port"];
 	unsigned short port = atoi(gate_port_str.c_str());
-    LOG_INFO(g_logger) << "GateServer is running";
 
 	try {
 		//unsigned short port = static_cast<unsigned short>(8080);

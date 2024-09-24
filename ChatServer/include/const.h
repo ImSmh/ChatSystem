@@ -7,27 +7,27 @@ static Logger::ptr g_logger = LOG_NAME("ChatServer");
 
 enum ErrorCodes {
 	Success = 0,
-	Error_Json = 1001,  //Json½âÎö´íÎó
-	RPCFailed = 1002,  //RPCÇëÇó´íÎó
-	VarifyExpired = 1003, //ÑéÖ¤Âë¹ýÆÚ
-	VarifyCodeErr = 1004, //ÑéÖ¤Âë´íÎó
-	UserExist = 1005,       //ÓÃ»§ÒÑ¾­´æÔÚ
-	PasswdErr = 1006,    //ÃÜÂë´íÎó
-	EmailNotMatch = 1007,  //ÓÊÏä²»Æ¥Åä
-	PasswdUpFailed = 1008,  //¸üÐÂÃÜÂëÊ§°Ü
-	PasswdInvalid = 1009,   //ÃÜÂë¸üÐÂÊ§°Ü
-	TokenInvalid = 1010,   //TokenÊ§Ð§
-	UidInvalid = 1011,  //uidÎÞÐ§
+	Error_Json = 1001,  
+	RPCFailed = 1002,  
+	VarifyExpired = 1003, 
+	VarifyCodeErr = 1004,
+	UserExist = 1005,       
+	PasswdErr = 1006,   
+	EmailNotMatch = 1007,  
+	PasswdUpFailed = 1008,  
+	PasswdInvalid = 1009,   
+	TokenInvalid = 1010, 
+	UidInvalid = 1011, 
 };
 
 
-// DeferÀà
+// Deferï¿½ï¿½
 class Defer {
 public:
-	// ½ÓÊÜÒ»¸ölambda±í´ïÊ½»òÕßº¯ÊýÖ¸Õë
+	// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½lambdaï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	Defer(std::function<void()> func) : func_(func) {}
 
-	// Îö¹¹º¯ÊýÖÐÖ´ÐÐ´«ÈëµÄº¯Êý
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð´ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½
 	~Defer() {
 		func_();
 	}
@@ -37,30 +37,30 @@ private:
 };
 
 #define MAX_LENGTH 1024*2
-//Í·²¿×Ü³¤¶È
+//Í·ï¿½ï¿½ï¿½Ü³ï¿½ï¿½ï¿½
 #define HEAD_TOTAL_LEN 4
-//Í·²¿id³¤¶È
+//Í·ï¿½ï¿½idï¿½ï¿½ï¿½ï¿½
 #define HEAD_ID_LEN 2
-//Í·²¿Êý¾Ý³¤¶È
+//Í·ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
 #define HEAD_DATA_LEN 2
 #define MAX_RECVQUE 10000
 #define MAX_SENDQUE 1000
 
 
 enum MSG_IDS {
-	MSG_CHAT_LOGIN				= 1005, //ÓÃ»§µÇÂ½
-	MSG_CHAT_LOGIN_RSP			= 1006, //ÓÃ»§µÇÂ½»Ø°ü
-	ID_SEARCH_USER_REQ			= 1007, //ÓÃ»§ËÑË÷ÇëÇó
-	ID_SEARCH_USER_RSP			= 1008, //ËÑË÷ÓÃ»§»Ø°ü
-	ID_ADD_FRIEND_REQ			= 1009, //ÉêÇëÌí¼ÓºÃÓÑÇëÇó
-	ID_ADD_FRIEND_RSP			= 1010, //ÉêÇëÌí¼ÓºÃÓÑ»Ø¸´
-	ID_NOTIFY_ADD_FRIEND_REQ	= 1011, //Í¨ÖªÓÃ»§Ìí¼ÓºÃÓÑÉêÇë
-	ID_AUTH_FRIEND_REQ			= 1013, //ÈÏÖ¤ºÃÓÑÇëÇó
-	ID_AUTH_FRIEND_RSP			= 1014, //ÈÏÖ¤ºÃÓÑ»Ø¸´
-	ID_NOTIFY_AUTH_FRIEND_REQ	= 1015, //Í¨ÖªÓÃ»§ÈÏÖ¤ºÃÓÑÉêÇë
-	ID_TEXT_CHAT_MSG_REQ		= 1017, //ÎÄ±¾ÁÄÌìÐÅÏ¢ÇëÇó
-	ID_TEXT_CHAT_MSG_RSP		= 1018, //ÎÄ±¾ÁÄÌìÐÅÏ¢»Ø¸´
-	ID_NOTIFY_TEXT_CHAT_MSG_REQ = 1019, //Í¨ÖªÓÃ»§ÎÄ±¾ÁÄÌìÐÅÏ¢
+	MSG_CHAT_LOGIN				= 1005, //ï¿½Ã»ï¿½ï¿½ï¿½Â½
+	MSG_CHAT_LOGIN_RSP			= 1006, //ï¿½Ã»ï¿½ï¿½ï¿½Â½ï¿½Ø°ï¿½
+	ID_SEARCH_USER_REQ			= 1007, //ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ID_SEARCH_USER_RSP			= 1008, //ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ø°ï¿½
+	ID_ADD_FRIEND_REQ			= 1009, //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ID_ADD_FRIEND_RSP			= 1010, //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óºï¿½ï¿½Ñ»Ø¸ï¿½
+	ID_NOTIFY_ADD_FRIEND_REQ	= 1011, //Í¨Öªï¿½Ã»ï¿½ï¿½ï¿½ï¿½Óºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ID_AUTH_FRIEND_REQ			= 1013, //ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ID_AUTH_FRIEND_RSP			= 1014, //ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½Ñ»Ø¸ï¿½
+	ID_NOTIFY_AUTH_FRIEND_REQ	= 1015, //Í¨Öªï¿½Ã»ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ID_TEXT_CHAT_MSG_REQ		= 1017, //ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+	ID_TEXT_CHAT_MSG_RSP		= 1018, //ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ø¸ï¿½
+	ID_NOTIFY_TEXT_CHAT_MSG_REQ = 1019, //Í¨Öªï¿½Ã»ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 };
 
 #define USERIPPREFIX  "uip_"

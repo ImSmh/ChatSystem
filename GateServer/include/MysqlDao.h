@@ -1,11 +1,5 @@
 ﻿#pragma once
 
-// #include <jdbc/mysql_driver.h>
-// #include <jdbc/mysql_connection.h>
-// #include <jdbc/cppconn/prepared_statement.h>
-// #include <jdbc/cppconn/resultset.h>
-// #include <jdbc/cppconn/statement.h>
-// #include <jdbc/cppconn/exception.h>
 #include <mysql_driver.h>
 #include <mysql_connection.h>
 #include <cppconn/prepared_statement.h>
@@ -15,6 +9,7 @@
 #include <thread>
 #include <chrono>
 #include "const.h"
+#include "Log.h"
 
 
 class SqlConnection {
@@ -52,6 +47,7 @@ public:
 		catch (sql::SQLException& e) {
 			// �����쳣
 			std::cout << "mysql pool init failed, error is " << e.what() << std::endl;
+			LOG_FMT_ERROR(g_logger, "mysql pool init failed, error is %s", e.what());
 		}
 	}
 
@@ -81,6 +77,7 @@ public:
 			}
 			catch (sql::SQLException& e) {
 				std::cout << "Error keeping connection alive: " << e.what() << std::endl;
+				LOG_WARN(g_logger) << "Error keeping connection alive: " << e.what();
 				// 重新创建连接并替换旧的连接
 				sql::mysql::MySQL_Driver* driver = sql::mysql::get_mysql_driver_instance();
 				auto* newcon = driver->connect(url_, user_, pass_);

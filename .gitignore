@@ -11,3 +11,5 @@ ChatServer/src/config.ini
 ChatServer2/build
 ChatServer2/log
 ChatServer2/src/config.ini
+run.sh
+stop.sh

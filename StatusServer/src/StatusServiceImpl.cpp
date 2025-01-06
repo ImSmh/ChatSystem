@@ -5,10 +5,10 @@
 #include <climits>
 
 std::string generate_unique_string() {
-	// ´´½¨UUID¶ÔÏó
+	// ï¿½ï¿½ï¿½ï¿½UUIDï¿½ï¿½ï¿½ï¿½
 	boost::uuids::uuid uuid = boost::uuids::random_generator()();
 
-	// ½«UUID×ª»»Îª×Ö·û´®
+	// ï¿½ï¿½UUID×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½
 	std::string unique_string = to_string(uuid);
 
 	return unique_string;
@@ -16,7 +16,7 @@ std::string generate_unique_string() {
 
 Status StatusServiceImpl::GetChatServer(ServerContext* context, const GetChatServerReq* request, GetChatServerRsp* reply)
 {
-	std::string prefix("llfc status server has received :  ");
+	std::string prefix("smh status server has received :  ");
 	const auto& server = getChatServer();
 	reply->set_host(server.host);
 	reply->set_port(server.port);
@@ -55,18 +55,20 @@ StatusServiceImpl::StatusServiceImpl()
 
 ChatServer StatusServiceImpl::getChatServer() {
 	std::lock_guard<std::mutex> guard(_server_mtx);
+	auto& cfg = ConfigMgr::Inst();
 	auto minServer = _servers.begin()->second;
 	auto count_str = RedisMgr::GetInstance()->HGet(LOGIN_COUNT, minServer.name);
 	if (count_str.empty()) {
-		//²»´æÔÚÔòÄ¬ÈÏÉèÖÃÎª×î´ó
+		//ä¸å­˜åœ¨åˆ™é»˜è®¤è®¾ç½®ä¸ºæœ€å¤§
 		minServer.con_count = INT_MAX;
 	}
 	else {
 		minServer.con_count = std::stoi(count_str);
+		minServer.con_count *= std::stoi(cfg[minServer.name]["LoadWeight"]);
 	}
 
 
-	// Ê¹ÓÃ·¶Î§»ùÓÚforÑ­»·
+	// ä½¿ç”¨èŒƒå›´åŸºäºforå¾ªç¯
 	for ( auto& server : _servers) {
 		
 		if (server.second.name == minServer.name) {
@@ -79,6 +81,7 @@ ChatServer StatusServiceImpl::getChatServer() {
 		}
 		else {
 			server.second.con_count = std::stoi(count_str);
+			server.second.con_count *= std::stoi(cfg[server.second.name]["LoadWeight"]);
 		}
 
 		if (server.second.con_count < minServer.con_count) {

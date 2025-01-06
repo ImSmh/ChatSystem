@@ -87,6 +87,14 @@ void CSession::AsyncReadBody(int total_len)
 	auto self = shared_from_this();
 	asyncReadFull(total_len, [self, this, total_len](const boost::system::error_code& ec, std::size_t bytes_transfered) {
 		try {
+			if (ec == boost::asio::error::eof) {
+				std::cout << " client close the connection" << endl;
+				// LOG_INFO(g_logger) << "client close the connection";
+				LOG_FMT_INFO(g_logger, "%d client close the connection", _user_uid);
+				Close();
+				_server->ClearSession(_session_id);
+				return;
+			}
 			if (ec) {
 				std::cout << "handle read failed, error is " << ec.message() << endl;
 				Close();
@@ -106,9 +114,9 @@ void CSession::AsyncReadBody(int total_len)
 			_recv_msg_node->_cur_len += bytes_transfered;
 			_recv_msg_node->_data[_recv_msg_node->_total_len] = '\0';
 			cout << "receive data is " << _recv_msg_node->_data << endl;
-			//�˴�����ϢͶ�ݵ��߼�������
+			
 			LogicSystem::GetInstance()->PostMsgToQue(make_shared<LogicNode>(shared_from_this(), _recv_msg_node));
-			//��������ͷ�������¼�
+
 			AsyncReadHead(HEAD_TOTAL_LEN);
 		}
 		catch (std::exception& e) {
@@ -122,6 +130,14 @@ void CSession::AsyncReadHead(int total_len)
 	auto self = shared_from_this();
 	asyncReadFull(HEAD_TOTAL_LEN, [self, this](const boost::system::error_code& ec, std::size_t bytes_transfered) {
 		try {
+			if (ec == boost::asio::error::eof) {
+				std::cout << " client close the connection" << endl;
+				// LOG_INFO(g_logger) << "client close the connection";
+				LOG_FMT_INFO(g_logger, "%d client close the connection", _user_uid);
+				Close();
+				_server->ClearSession(_session_id);
+				return;
+			}
 			if (ec) {
 				std::cout << "handle read failed, error is " << ec.message() << endl;
 				Close();
@@ -140,13 +156,12 @@ void CSession::AsyncReadHead(int total_len)
 			_recv_head_node->Clear();
 			memcpy(_recv_head_node->_data, _data, bytes_transfered);
 
-			//��ȡͷ��MSGID����
 			short msg_id = 0;
 			memcpy(&msg_id, _recv_head_node->_data, HEAD_ID_LEN);
-			//�����ֽ���ת��Ϊ�����ֽ���
+
 			msg_id = boost::asio::detail::socket_ops::network_to_host_short(msg_id);
 			std::cout << "msg_id is " << msg_id << endl;
-			//id�Ƿ�
+
 			if (msg_id > MAX_LENGTH) {
 				std::cout << "invalid msg_id is " << msg_id << endl;
 				_server->ClearSession(_session_id);
@@ -154,11 +169,10 @@ void CSession::AsyncReadHead(int total_len)
 			}
 			short msg_len = 0;
 			memcpy(&msg_len, _recv_head_node->_data + HEAD_ID_LEN, HEAD_DATA_LEN);
-			//�����ֽ���ת��Ϊ�����ֽ���
+
 			msg_len = boost::asio::detail::socket_ops::network_to_host_short(msg_len);
 			std::cout << "msg_len is " << msg_len << endl;
 
-			//id�Ƿ�
 			if (msg_len > MAX_LENGTH) {
 				std::cout << "invalid data length is " << msg_len << endl;
 				_server->ClearSession(_session_id);

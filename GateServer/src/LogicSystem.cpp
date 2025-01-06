@@ -42,7 +42,6 @@ LogicSystem::LogicSystem() {
             return true;
         }
 
-        // 可能会被客户端并发调用，需做处理
         auto email = src_root["email"].asString();
         GetVarifyRsp rsp =  VerifyGrpcClient::GetInstance()->GetvarifyCode(email);
         //std::cout << "email is " << email << std::endl;
@@ -75,7 +74,7 @@ LogicSystem::LogicSystem() {
         auto name = src_root["user"].asString();
         auto pwd = src_root["passwd"].asString();
         auto confirm = src_root["confirm"].asString();
-	auto icon = src_root["icon"].asString();
+	    auto icon = src_root["icon"].asString();
 
         if (pwd != confirm) {
             std::cout << "password err " << std::endl;
@@ -224,7 +223,7 @@ LogicSystem::LogicSystem() {
         auto email = src_root["email"].asString();
         auto pwd = src_root["passwd"].asString();
         UserInfo userInfo;
-        //��ѯ���ݿ��ж��û����������Ƿ�ƥ��
+        
         bool pwd_valid = MysqlMgr::GetInstance()->CheckPwd(email, pwd, userInfo);
         if (!pwd_valid) {
             std::cout << " user pwd not match" << std::endl;
@@ -235,7 +234,6 @@ LogicSystem::LogicSystem() {
             return true;
         }
 
-        //��ѯStatusServer�ҵ����ʵ�����
         auto reply = StatusGrpcClient::GetInstance()->GetChatServer(userInfo.uid);
         if (reply.error()) {
             std::cout << " grpc get chat server failed, error is " << reply.error() << std::endl;

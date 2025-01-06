@@ -59,7 +59,6 @@ void HttpConnection::WriteResponse()
 
 void HttpConnection::HandleReq()
 {
-	// ���ð汾
 	_response.version(_request.version());
 	_response.keep_alive(false);
 	if(_request.method() == http::verb::get) {
